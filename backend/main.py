@@ -12,30 +12,13 @@ from services.search import semantic_search, SAMPLE_DATASET
 
 app = FastAPI(title="AI Concept Playground API")
 
-# CORS middleware
-import os
-import re
-
-# Allow localhost for development and production URLs
-allowed_origins = [
-    "http://localhost:5173",
-    "http://localhost:3000",
-    "http://localhost:5174",
-]
-
-# Get frontend URL from environment variable (set in Railway)
-frontend_url = os.getenv("FRONTEND_URL", "")
-if frontend_url:
-    allowed_origins.append(frontend_url)
-
-# Allow all Vercel preview and production deployments
+# CORS middleware - Allow all origins (frontend handles API key security)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins since API key is required for actual operations
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_origin_regex=r"https://.*\.vercel\.app$",  # Allows all Vercel deployments
 )
 
 # Request models
