@@ -14,23 +14,28 @@ app = FastAPI(title="AI Concept Playground API")
 
 # CORS middleware
 import os
+import re
 
 # Allow localhost for development and production URLs
 allowed_origins = [
     "http://localhost:5173",
     "http://localhost:3000",
-    # Add your Vercel deployment URL here after deployment
-    # Example: "https://ai-playground-xxxxx.vercel.app"
+    "http://localhost:5174",
 ]
 
-# Allow all Vercel preview deployments (optional but convenient)
+# Get frontend URL from environment variable (set in Railway)
+frontend_url = os.getenv("FRONTEND_URL", "")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+
+# Allow all Vercel preview and production deployments
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    allow_origin_regex=r"https://.*\.vercel\.app",  # Allows all Vercel deployments
+    allow_origin_regex=r"https://.*\.vercel\.app$",  # Allows all Vercel deployments
 )
 
 # Request models
